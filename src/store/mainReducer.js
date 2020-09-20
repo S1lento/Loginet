@@ -9,7 +9,6 @@ const initialState = {
 
 export default function mainReducer(state = initialState, action) {
   const {type, payload} = action;
-  console.log(payload);
   switch (type) {
     case GET_DATA:
       return {

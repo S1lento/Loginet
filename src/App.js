@@ -1,8 +1,11 @@
-import React from 'react';
-import {connect} from 'react-redux';
+import React, {useMemo} from 'react';
 import ReactSpinnerTimer from 'react-spinner-timer';
-import {fetchData} from './store/actions';
+import {connect} from 'react-redux';
+
 import ReactTable from './components/Table';
+import {fetchData} from './store/actions';
+import {computeDataWrapperForTable} from './helpers/compute';
+
 import './App.css';
 
 function App(props) {
@@ -10,7 +13,12 @@ function App(props) {
   const userId = props && props.userId;
   const title = props && props.title;
   const completed = props && props.completed;
+  const changeThisForSpinnerSpeed = 3;
 
+  const computedData = useMemo(
+    () => computeDataWrapperForTable(id, userId, title, completed),
+    [id, userId, title, completed]
+  );
   const handleOnLapInteraction = (lap) => {
     props.fetchData(id);
   };
@@ -33,16 +41,15 @@ function App(props) {
     },
   ];
 
-  const createDataForTable = (id, userId, title, completed) => {};
   return (
     <div className='table__container'>
       <ReactSpinnerTimer
-        timeInSeconds={1}
+        timeInSeconds={changeThisForSpinnerSpeed}
         totalLaps={200}
         isRefresh={false}
         onLapInteraction={(lap) => handleOnLapInteraction(lap)}
       />
-      <ReactTable columns={columns} data={[{id, userId, completed, title}]} />
+      <ReactTable columns={columns} data={[computedData]} />
     </div>
   );
 }
